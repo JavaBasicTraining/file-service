@@ -9,10 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -45,26 +48,28 @@ public class MinioService implements IMinioService {
 
     @Override
     public String uploadByLink(String link, String filePath) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-//        URL url = new URL(link);
         String fileName = StringUtils.substringAfterLast(link, "/");
-        /*
+
         Path path = new File(fileName).toPath();
         String mimeType = Files.probeContentType(path);
 
-        File file = new File(url.getFile());*/
+        InputStream fileInputStream = null;
+        int fileSize = 0;
+        try {
+            URLConnection urlConnection = new URL(link).openConnection();
+            fileSize = urlConnection.getContentLength();
+            fileInputStream = new URL(link).openStream();
 
-        URLConnection urlConnection = new URL(link).openConnection();
-        String contentType = urlConnection.getContentType();
-        int size = urlConnection.getContentLength();
-
-        InputStream inputStream = new URL(link).openStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         ObjectWriteResponse response = minioClient.putObject(
                 PutObjectArgs.builder()
                         .bucket(BUCKET_NAME)
                         .object(filePath + "/" + fileName)
-                        .contentType(contentType)
-                        .stream(inputStream, size, -1)
+                        .contentType(mimeType)
+                        .stream(fileInputStream, fileSize, -1)
                         .build()
         );
 
