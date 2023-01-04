@@ -1,9 +1,9 @@
-package com.example.demominio.controller;
+package com.training.file_service.controller;
 
-import com.example.demominio.model.FileInfo;
-import com.example.demominio.model.UploadByFile;
-import com.example.demominio.model.UploadByLink;
-import com.example.demominio.service.IMinioService;
+import com.training.file_service.model.FileInfo;
+import com.training.file_service.model.UploadByFile;
+import com.training.file_service.model.UploadByLink;
+import com.training.file_service.service.IMinioService;
 import io.minio.errors.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,12 +27,12 @@ public class FileController implements IFileController {
     }
 
     @Override
-    public ResponseEntity<String> uploadByLink(UploadByLink request) {
+    public ResponseEntity<FileInfo> uploadByLink(UploadByLink request) {
         try {
             return ResponseEntity.ok(
                     iMinioService.uploadByLink(
                             request.getLink(),
-                            request.getPath()
+                            request.getType().getPath()
                     )
             );
         } catch (IOException | ServerException | InsufficientDataException | ErrorResponseException |
@@ -43,12 +43,12 @@ public class FileController implements IFileController {
     }
 
     @Override
-    public ResponseEntity<String> uploadByFile(UploadByFile request) {
+    public ResponseEntity<FileInfo> uploadByFile(UploadByFile request) {
         try {
             return ResponseEntity.ok(
                     iMinioService.uploadByFile(
                             request.getFile(),
-                            request.getPath()
+                            request.getType().getPath()
                     )
             );
         } catch (IOException | ServerException | InsufficientDataException | ErrorResponseException |

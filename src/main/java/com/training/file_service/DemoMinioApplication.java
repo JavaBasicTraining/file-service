@@ -1,4 +1,4 @@
-package com.example.demominio;
+package com.training.file_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

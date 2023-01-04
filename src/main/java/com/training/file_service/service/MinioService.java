@@ -1,6 +1,6 @@
-package com.example.demominio.service;
+package com.training.file_service.service;
 
-import com.example.demominio.model.FileInfo;
+import com.training.file_service.model.FileInfo;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
@@ -25,14 +25,14 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MinioService implements IMinioService {
     private final MinioClient minioClient;
-    private static final String BUCKET_NAME = "huyhn";
+    private static final String BUCKET_NAME = "movie";
 
     public MinioService(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
 
     @Override
-    public String uploadByFile(MultipartFile file, String filePath) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public FileInfo uploadByFile(MultipartFile file, String filePath) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         String objectName = filePath + "/" + file.getOriginalFilename();
         ObjectWriteResponse response = minioClient.putObject(
                 PutObjectArgs.builder()
@@ -43,11 +43,15 @@ public class MinioService implements IMinioService {
                         .build()
         );
 
-        return getUrlFile(response.object());
+        return FileInfo.builder()
+                .name(file.getOriginalFilename())
+                .size(file.getSize())
+                .url(getUrlFile(response.object()))
+                .build();
     }
 
     @Override
-    public String uploadByLink(String link, String filePath) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public FileInfo uploadByLink(String link, String filePath) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         String fileName = StringUtils.substringAfterLast(link, "/");
 
         Path path = new File(fileName).toPath();
@@ -73,7 +77,11 @@ public class MinioService implements IMinioService {
                         .build()
         );
 
-        return getUrlFile(response.object());
+        return FileInfo.builder()
+                .name(fileName)
+                .size((long) fileSize)
+                .url(getUrlFile(response.object()))
+                .build();
     }
 
     @Override

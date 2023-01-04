@@ -1,8 +1,8 @@
-package com.example.demominio.controller;
+package com.training.file_service.controller;
 
-import com.example.demominio.model.FileInfo;
-import com.example.demominio.model.UploadByFile;
-import com.example.demominio.model.UploadByLink;
+import com.training.file_service.model.FileInfo;
+import com.training.file_service.model.UploadByFile;
+import com.training.file_service.model.UploadByLink;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ public interface IFileController {
     @GetMapping("list")
     ResponseEntity<List<FileInfo>> getList();
 
-    @PostMapping("upload-by-link")
-    ResponseEntity<String> uploadByLink(@RequestBody UploadByLink request);
+    @PostMapping(value = "upload-by-link")
+    ResponseEntity<FileInfo> uploadByLink(@RequestBody @Valid UploadByLink request);
 
     @PostMapping(value = "upload-by-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<String> uploadByFile(@ModelAttribute @Valid UploadByFile request);
+    ResponseEntity<FileInfo> uploadByFile(@ModelAttribute @Valid UploadByFile request);
 }

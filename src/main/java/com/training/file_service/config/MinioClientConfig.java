@@ -1,4 +1,4 @@
-package com.example.demominio.config;
+package com.training.file_service.config;
 
 import io.minio.MinioClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

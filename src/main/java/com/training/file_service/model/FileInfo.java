@@ -1,4 +1,4 @@
-package com.example.demominio.model;
+package com.training.file_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UploadByLink {
-    private String link;
-    private String path;
+public class FileInfo {
+    private String name;
+    private Long size;
+    private String url;
 }
